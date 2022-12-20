@@ -30,7 +30,7 @@ public class Logger {
 	public Logger() {
 		this(
 				new OutputStream[] {System.out}, 
-				new OutputStream[] {System.out}, 
+				new OutputStream[] {System.err}, 
 				new OutputStream[] {System.err}, 
 				() -> {}
 			);
@@ -43,7 +43,7 @@ public class Logger {
 	public Logger(FileOutputStream logFileStream, boolean closeFileOnEnd) {
 		this(
 				new OutputStream[] {System.out, logFileStream}, 
-				new OutputStream[] {System.out, logFileStream}, 
+				new OutputStream[] {System.err, logFileStream}, 
 				new OutputStream[] {System.err, logFileStream}, 
 				() -> {
 					if (closeFileOnEnd)
