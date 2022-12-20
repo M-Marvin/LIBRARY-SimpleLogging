@@ -1,14 +1,33 @@
 
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 
-group = 'com.github.jitpack'
+group = 'com.github.M-Marvin'
 version = '0.1'
 
-repositories {
-	maven { url 'https://jitpack.io' }
-    mavenCentral()
+// Add additional content to the manifest
+tasks.named('jar') {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                   'Implementation-Version': version,
+                   'Author': 'M_Marvin')
+    }
 }
 
-dependencies {
-	
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+			from components.java
+        }
+    }
+}
+
+// Specify gradle version to use for jitpack
+wrapper {
+    gradleVersion = "7.4.2"
+    distributionType = Wrapper.DistributionType.ALL
 }
