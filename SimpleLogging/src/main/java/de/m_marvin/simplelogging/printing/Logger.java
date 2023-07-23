@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.function.Function;
+
+import de.m_marvin.simplelogging.filehandling.LogFileHandler;
 
 public class Logger {
 	
@@ -21,7 +23,7 @@ public class Logger {
 		return defaultLogger;
 	}
 	
-	protected DateTimeFormatter dateTimeFormat;
+	protected Function<LocalDateTime, String> dateTimeFormat;
 	protected OutputStream[] infoStream;
 	protected OutputStream[] errorStream;
 	protected OutputStream[] warnStream;
@@ -65,14 +67,14 @@ public class Logger {
 		this.warnStream = warnStream;
 		this.errorStream = errorStream;
 		this.closeActions = closeActions;
-		this.dateTimeFormat = DateTimeFormatter.ISO_DATE_TIME;
+		this.dateTimeFormat = LogFileHandler::fileNameFormatted;
 	}
 
 	public String getTimeString() {
-		return LocalDateTime.now().format(this.dateTimeFormat);
+		return this.dateTimeFormat.apply(LocalDateTime.now());
 	}
 	
-	public void setDateTimeFormat(DateTimeFormatter dateTimeFormat) {
+	public void setDateTimeFormat(Function<LocalDateTime, String> dateTimeFormat) {
 		this.dateTimeFormat = dateTimeFormat;
 	}
 	
@@ -144,6 +146,24 @@ public class Logger {
 			for (OutputStream os : this.errorStream) e.printStackTrace(new PrintStream(os));
 			break;
 		}
+	}
+	
+	public PrintStream outPrintStream() {
+		return new PrintStream(new OutputStream() {
+			@Override
+			public void write(int b) throws IOException {
+				for (OutputStream os : Logger.this.infoStream) os.write(b);
+			}
+		});
+	}
+
+	public PrintStream errPrintStream() {
+		return new PrintStream(new OutputStream() {
+			@Override
+			public void write(int b) throws IOException {
+				for (OutputStream os : Logger.this.errorStream) os.write(b);
+			}
+		});
 	}
 	
 }

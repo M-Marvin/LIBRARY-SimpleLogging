@@ -65,12 +65,12 @@ public class LogFileHandler {
 		storeLatestFile();
 	}
 	
-	protected static String fileNameFormatted(LocalDateTime time) {
-		return time.getDayOfMonth() + "." + time.getMonthValue() + "." + time.getYear() + "T" + time.getHour() + "." + time.getMinute() + "." + time.getSecond();
+	public static String fileNameFormatted(LocalDateTime time) {
+		return time.getDayOfMonth() + "." + time.getMonthValue() + "." + time.getYear() + "_" + String.format("%02d", time.getHour()) + "." + String.format("%02d", time.getMinute()) + "." + String.format("%02d", time.getSecond());
 	}
 	
 	protected void storeLatestFile() throws IOException {
-		String fileName = logApplicationName + "_" + fileNameFormatted(startTime) + "_" + fileNameFormatted(endTime) + "." + LOG_FILE_FORMAT;
+		String fileName = logApplicationName + "-" + fileNameFormatted(startTime) + "-" + fileNameFormatted(endTime) + "." + LOG_FILE_FORMAT;
 		Files.move(getLatestLogFile().toPath(), new File(getLogFileFolder(), "/" + fileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 	
