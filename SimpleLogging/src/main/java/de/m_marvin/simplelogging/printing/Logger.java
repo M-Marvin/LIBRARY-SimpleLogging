@@ -69,7 +69,7 @@ public class Logger {
 		this.closeActions = closeActions;
 		this.dateTimeFormat = LogFileHandler::fileNameFormatted;
 	}
-
+	
 	public String getTimeString() {
 		return this.dateTimeFormat.apply(LocalDateTime.now());
 	}
