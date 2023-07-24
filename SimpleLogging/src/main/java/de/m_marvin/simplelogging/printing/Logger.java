@@ -15,7 +15,7 @@ import de.m_marvin.simplelogging.filehandling.LogFileHandler;
 
 public class Logger {
 	
-	private static Logger defaultLogger;
+	private static Logger defaultLogger = new Logger();
 	
 	public static void setDefaultLogger(Logger logger) {
 		defaultLogger = logger;
@@ -136,6 +136,7 @@ public class Logger {
 				break;
 			}
 		} catch (IOException e) {
+			System.err.println("Failed to write log string to streams!");
 			e.printStackTrace();
 		}
 	}
