@@ -30,10 +30,6 @@ public class LogFileHandler {
 		return logFileFolder;
 	}
 	
-	public File getLatestLogFile() {
-		return new File(this.logFileFolder, "/" + LATEST_LOG_NAME + "." + LOG_FILE_FORMAT);
-	}
-	
 	public String getLogApplicationName() {
 		return logApplicationName;
 	}
@@ -53,7 +49,7 @@ public class LogFileHandler {
 	public Logger beginLogging() throws FileNotFoundException {
 		if (this.logger != null) throw new IllegalStateException("A log-session is already started!");
 		this.startTime = LocalDateTime.now();
-		this.logger = new Logger(getLatestLogFile());
+		this.logger = new Logger(getCurrentIncompleteLogFile(), getLatestLogFile());
 		return this.logger;
 	}
 	
@@ -65,6 +61,14 @@ public class LogFileHandler {
 		storeLatestFile();
 	}
 	
+	public File getLatestLogFile() {
+		return new File(this.logFileFolder, "/" + LATEST_LOG_NAME + "." + LOG_FILE_FORMAT);
+	}
+	
+	public File getCurrentIncompleteLogFile() {
+		return new File(this.logFileFolder, "/" + logApplicationName + "-" + fileNameFormatted(this.startTime) + "-INCOMPLETED." + LOG_FILE_FORMAT);
+	}
+	
 	public static String fileNameFormatted(LocalDateTime time) {
 		return time.getDayOfMonth() + "." + time.getMonthValue() + "." + time.getYear() + "_" + String.format("%02d", time.getHour()) + "." + String.format("%02d", time.getMinute()) + "." + String.format("%02d", time.getSecond());
 	}
@@ -72,6 +76,7 @@ public class LogFileHandler {
 	protected void storeLatestFile() throws IOException {
 		String fileName = logApplicationName + "-" + fileNameFormatted(startTime) + "-" + fileNameFormatted(endTime) + "." + LOG_FILE_FORMAT;
 		Files.move(getLatestLogFile().toPath(), new File(getLogFileFolder(), "/" + fileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
+		Files.delete(getCurrentIncompleteLogFile().toPath());
 	}
 	
 }

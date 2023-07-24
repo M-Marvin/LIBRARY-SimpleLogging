@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import de.m_marvin.simplelogging.filehandling.LogFileHandler;
 
@@ -38,24 +40,35 @@ public class Logger {
 			);
 	}
 
-	public Logger(File logFile) throws FileNotFoundException {
-		this(new FileOutputStream(logFile), true);
+	public Logger(File... logFiles) {
+		this(Stream.of(logFiles).map(file -> {
+			try {
+				return new FileOutputStream(file);
+			} catch (FileNotFoundException e) {
+				System.err.println("Failed to open log file!");
+				e.printStackTrace();
+				return null;
+			}
+		}).toArray(i -> new OutputStream[i]));
 	}
 	
-	public Logger(FileOutputStream logFileStream, boolean closeFileOnEnd) {
-		this(
-				new OutputStream[] {System.out, logFileStream}, 
-				new OutputStream[] {System.err, logFileStream}, 
-				new OutputStream[] {System.err, logFileStream}, 
-				() -> {
-					if (closeFileOnEnd)
-						try {
-							logFileStream.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+	public Logger(OutputStream... logFileStreams) {
+		this.infoStream = Arrays.copyOf(logFileStreams, logFileStreams.length + 1);
+		this.infoStream[logFileStreams.length] = System.out;
+		this.warnStream = Arrays.copyOf(logFileStreams, logFileStreams.length + 1);
+		this.warnStream[logFileStreams.length] = System.err;
+		this.errorStream = Arrays.copyOf(logFileStreams, logFileStreams.length + 1);
+		errorStream[logFileStreams.length] = System.err;
+		this.closeActions = () -> {
+			for (OutputStream fileStream : logFileStreams) {
+				try {
+					fileStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			);
+			}
+		};
+		this.dateTimeFormat = LogFileHandler::fileNameFormatted;
 	}
 	
 	public Logger(OutputStream[] infoStream, OutputStream[] warnStream, OutputStream[] errorStream) {
@@ -79,6 +92,7 @@ public class Logger {
 	}
 	
 	public void close() throws IOException {
+		releaseSystemStreams();
 		closeActions.run();
 	}
 	
@@ -164,6 +178,27 @@ public class Logger {
 				for (OutputStream os : Logger.this.errorStream) os.write(b);
 			}
 		});
+	}
+	
+	protected PrintStream standardOutStream;
+	protected PrintStream standardErrStream;
+	
+	public void catchSystemStreams() {
+		if (this.standardOutStream == null) {
+			this.standardOutStream = System.out;
+			this.standardErrStream = System.err;
+			System.setOut(outPrintStream());
+			System.setErr(errPrintStream());
+		}
+	}
+	
+	public void releaseSystemStreams() {
+		if (this.standardOutStream != null) {
+			System.setOut(standardOutStream);
+			System.setErr(standardErrStream);
+			this.standardOutStream = null;
+			this.standardErrStream = null;
+		}
 	}
 	
 }
