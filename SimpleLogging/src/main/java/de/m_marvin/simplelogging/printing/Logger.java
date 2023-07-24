@@ -35,13 +35,12 @@ public class Logger {
 		this(
 				new OutputStream[] {System.out}, 
 				new OutputStream[] {System.err}, 
-				new OutputStream[] {System.err}, 
-				() -> {}
+				new OutputStream[] {System.err}
 			);
 	}
-
+	
 	public Logger(File... logFiles) {
-		this(Stream.of(logFiles).map(file -> {
+		OutputStream[] logFileStreams = Stream.of(logFiles).map(file -> {
 			try {
 				return new FileOutputStream(file);
 			} catch (FileNotFoundException e) {
@@ -49,10 +48,7 @@ public class Logger {
 				e.printStackTrace();
 				return null;
 			}
-		}).toArray(i -> new OutputStream[i]));
-	}
-	
-	public Logger(OutputStream... logFileStreams) {
+		}).toArray(i -> new OutputStream[i]);
 		this.infoStream = Arrays.copyOf(logFileStreams, logFileStreams.length + 1);
 		this.infoStream[logFileStreams.length] = System.out;
 		this.warnStream = Arrays.copyOf(logFileStreams, logFileStreams.length + 1);
