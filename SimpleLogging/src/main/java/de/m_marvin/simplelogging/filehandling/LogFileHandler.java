@@ -1,7 +1,6 @@
 package de.m_marvin.simplelogging.filehandling;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -46,14 +45,14 @@ public class LogFileHandler {
 		return logger;
 	}
 	
-	public Logger beginLogging() throws FileNotFoundException {
+	public Logger beginLogging() {
 		if (this.logger != null) throw new IllegalStateException("A log-session is already started!");
 		this.startTime = LocalDateTime.now();
 		this.logger = new Logger(getCurrentIncompleteLogFile(), getLatestLogFile());
 		return this.logger;
 	}
 	
-	public void endLogging() throws IOException {
+	public void endLogging() {
 		if (this.logger == null) throw new IllegalStateException("No log-session is active!");
 		this.logger.close();
 		this.logger = null;
@@ -73,10 +72,15 @@ public class LogFileHandler {
 		return time.getDayOfMonth() + "." + time.getMonthValue() + "." + time.getYear() + "_" + String.format("%02d", time.getHour()) + "." + String.format("%02d", time.getMinute()) + "." + String.format("%02d", time.getSecond());
 	}
 	
-	protected void storeLatestFile() throws IOException {
-		String fileName = logApplicationName + "-" + fileNameFormatted(startTime) + "-" + fileNameFormatted(endTime) + "." + LOG_FILE_FORMAT;
-		Files.move(getLatestLogFile().toPath(), new File(getLogFileFolder(), "/" + fileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
-		Files.delete(getCurrentIncompleteLogFile().toPath());
+	protected void storeLatestFile() {
+		try {
+			String fileName = logApplicationName + "-" + fileNameFormatted(startTime) + "-" + fileNameFormatted(endTime) + "." + LOG_FILE_FORMAT;
+			Files.move(getLatestLogFile().toPath(), new File(getLogFileFolder(), "/" + fileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
+			Files.delete(getCurrentIncompleteLogFile().toPath());
+		} catch (IOException e) {
+			System.err.println("Failed to rename latest.log!");
+			e.printStackTrace();
+		}
 	}
 	
 }

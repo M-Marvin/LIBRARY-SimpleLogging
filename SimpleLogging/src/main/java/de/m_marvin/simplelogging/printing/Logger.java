@@ -46,7 +46,7 @@ public class Logger {
 			} catch (FileNotFoundException e) {
 				System.err.println("Failed to open log file!");
 				e.printStackTrace();
-				return null;
+				return OutputStream.nullOutputStream();
 			}
 		}).toArray(i -> new OutputStream[i]);
 		this.infoStream = Arrays.copyOf(logFileStreams, logFileStreams.length + 1);
@@ -60,6 +60,7 @@ public class Logger {
 				try {
 					fileStream.close();
 				} catch (IOException e) {
+					System.err.println("Failed to close log output stream!");
 					e.printStackTrace();
 				}
 			}
@@ -87,7 +88,7 @@ public class Logger {
 		this.dateTimeFormat = dateTimeFormat;
 	}
 	
-	public void close() throws IOException {
+	public void close() {
 		releaseSystemStreams();
 		closeActions.run();
 	}
