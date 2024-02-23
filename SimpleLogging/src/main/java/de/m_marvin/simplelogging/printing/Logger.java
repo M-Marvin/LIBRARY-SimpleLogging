@@ -141,11 +141,11 @@ public class Logger {
 		}
 	}
 	
-	public void printException(LogType target, Exception e) {
+	public void printException(LogType target, Throwable e) {
 		printException(target, null, e);
 	}
 	
-	public void printException(LogType target, String tag, Exception e) {
+	public void printException(LogType target, String tag, Throwable e) {
 		log(target, tag, e.getMessage());
 		switch (target) {
 		case INFO:
