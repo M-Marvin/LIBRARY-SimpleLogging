@@ -99,30 +99,43 @@ public class Logger {
 	public void logInfo(String tag, String msg) {
 		log(LogType.INFO, tag, msg);
 	}
-
+	public void logInfo(String tag, String format, Object... arg) {
+		log(LogType.INFO, tag, format, arg);
+	}
+	
 	public void logWarn(String msg) {
 		log(LogType.WARN, null, msg);
 	}
 	public void logWarn(String tag, String msg) {
 		log(LogType.WARN, tag, msg);
 	}
-
+	public void logWarn(String tag, String format, Object... arg) {
+		log(LogType.WARN, tag, format, arg);
+	}
+	
 	public void logError(String msg) {
 		log(LogType.ERROR, null, msg);
 	}
 	public void logError(String tag, String msg) {
 		log(LogType.ERROR, tag, msg);
 	}
+	public void logError(String tag, String format, Object... arg) {
+		log(LogType.ERROR, tag, format, arg);
+	}
+	
+	public void log(LogType target, String tag, String format, Object... arg) {
+		log(target, tag, String.format(format, arg));
+	}
 	
 	public void log(LogType target, String tag, String msg) {
-		println(target, getTimeString() + ": [" + target.name() + (tag != null ? "\\" + tag : "") + "] " + msg);
+		println(target, getTimeString() + ": [" + target.name() + (tag != null ? "/" + tag : "") + "] " + msg);
 	}
 	
 	public void println(LogType target, String msg) {
 		print(target, msg + "\n");
 	}
 	
-	public void print(LogType target,String msg) {
+	public void print(LogType target, String msg) {
 		try {
 			switch (target) {
 			case INFO:
@@ -158,6 +171,27 @@ public class Logger {
 			for (OutputStream os : this.errorStream) e.printStackTrace(new PrintStream(os));
 			break;
 		}
+	}
+	
+	public void printExceptionInfo(Throwable e) {
+		printException(LogType.INFO, e);
+	}
+	public void printExceptionInfo(String tag, Throwable e) {
+		printException(LogType.INFO, tag, e);
+	}
+
+	public void printExceptionWarn(Throwable e) {
+		printException(LogType.WARN, e);
+	}
+	public void printExceptionWarn(String tag, Throwable e) {
+		printException(LogType.WARN, tag, e);
+	}
+	
+	public void printExceptionError(Throwable e) {
+		printException(LogType.ERROR, e);
+	}
+	public void printExceptionError(String tag, Throwable e) {
+		printException(LogType.ERROR, tag, e);
 	}
 	
 	public PrintStream outPrintStream() {
