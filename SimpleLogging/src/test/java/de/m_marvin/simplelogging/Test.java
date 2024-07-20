@@ -13,10 +13,11 @@ public class Test {
 		File runDir = new File(new File(Test.class.getClassLoader().getResource("").getPath().substring(1)).getParentFile().getParentFile(), "run");
 		System.out.println("Run/Log-Folder: " + runDir);
 		
-		LogFileHandler logManager = new LogFileHandler(runDir, "ExampleApp");
+		LogFileHandler logManager = new LogFileHandler(runDir, "ExampleApp").stopBeforeExit();
 		Logger logger = logManager.beginLogging();
 		logger.catchSystemStreams();
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> logManager.endLogging()));
+		
+		Logger.setDefaultLogger(logger);
 		
 		logger.println(LogType.INFO, "Test Info");
 		logger.println(LogType.ERROR, "Test error");
@@ -26,7 +27,7 @@ public class Test {
 		
 		System.out.println("TEST 11");
 		
-		System.exit(-1);
+//		System.exit(-1);
 		
 		logger.log(LogType.INFO, "Test1", "INFO");
 		logger.log(LogType.ERROR, "Test1", "INFO");

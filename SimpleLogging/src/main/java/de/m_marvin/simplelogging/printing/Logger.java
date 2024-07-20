@@ -65,7 +65,7 @@ public class Logger {
 				}
 			}
 		};
-		this.dateTimeFormat = LogFileHandler::fileNameFormatted;
+		this.dateTimeFormat = LogFileHandler::timeFormated;
 	}
 	
 	public Logger(OutputStream[] infoStream, OutputStream[] warnStream, OutputStream[] errorStream) {
@@ -77,7 +77,7 @@ public class Logger {
 		this.warnStream = warnStream;
 		this.errorStream = errorStream;
 		this.closeActions = closeActions;
-		this.dateTimeFormat = LogFileHandler::fileNameFormatted;
+		this.dateTimeFormat = LogFileHandler::timeFormated;
 	}
 	
 	public String getTimeString() {

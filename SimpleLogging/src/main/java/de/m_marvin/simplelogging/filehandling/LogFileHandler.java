@@ -25,6 +25,11 @@ public class LogFileHandler {
 		this.logApplicationName = applicationName;
 	}
 	
+	public LogFileHandler stopBeforeExit() {
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> { if (this.isLogging()) this.endLogging(); }));
+		return this;
+	}
+	
 	public File getLogFileFolder() {
 		return logFileFolder;
 	}
@@ -43,6 +48,10 @@ public class LogFileHandler {
 	
 	public Logger getLogger() {
 		return logger;
+	}
+	
+	public boolean isLogging() {
+		return this.logger != null;
 	}
 	
 	public Logger beginLogging() {
@@ -65,16 +74,22 @@ public class LogFileHandler {
 	}
 	
 	public File getCurrentIncompleteLogFile() {
-		return new File(this.logFileFolder, "/" + logApplicationName + "-" + fileNameFormatted(this.startTime) + "-INCOMPLETED." + LOG_FILE_FORMAT);
+		return new File(this.logFileFolder, "/" + logApplicationName + "-" + timeFormated(this.startTime) + "-INCOMPLETED." + LOG_FILE_FORMAT);
 	}
 	
-	public static String fileNameFormatted(LocalDateTime time) {
-		return time.getDayOfMonth() + "." + time.getMonthValue() + "." + time.getYear() + "_" + String.format("%02d", time.getHour()) + "." + String.format("%02d", time.getMinute()) + "." + String.format("%02d", time.getSecond());
+	public static String timeFormated(LocalDateTime time) {
+		return String.format("%02d.%02d.%04d_%02d.%02d.%02d", 
+				time.getDayOfMonth(), 
+				time.getMonthValue(), 
+				time.getYear(), 
+				time.getHour(), 
+				time.getMinute(), 
+				time.getSecond());
 	}
 	
 	protected void storeLatestFile() {
 		try {
-			String fileName = logApplicationName + "-" + fileNameFormatted(startTime) + "-" + fileNameFormatted(endTime) + "." + LOG_FILE_FORMAT;
+			String fileName = logApplicationName + "-" + timeFormated(startTime) + "-" + timeFormated(endTime) + "." + LOG_FILE_FORMAT;
 			Files.move(getLatestLogFile().toPath(), new File(getLogFileFolder(), "/" + fileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
 			Files.delete(getCurrentIncompleteLogFile().toPath());
 		} catch (IOException e) {
