@@ -6,6 +6,7 @@ import java.io.IOException;
 import de.m_marvin.simplelogging.api.Logger;
 import de.m_marvin.simplelogging.impl.FilteredLogger;
 import de.m_marvin.simplelogging.impl.MultiLogger;
+import de.m_marvin.simplelogging.impl.StacktraceLogger;
 import de.m_marvin.simplelogging.impl.StreamLogger;
 import de.m_marvin.simplelogging.impl.SystemLogger;
 
@@ -19,7 +20,7 @@ public class Test {
 		LogFileProvider logManager = new LogFileProvider(runDir).setName("ExampleLog").stopBeforeExit();
 		Logger logger;
 		try {
-			logger = new MultiLogger(new FilteredLogger(new StreamLogger(logManager.beginLogging()), (level, tag) -> level != LogLevel.DEBUG), new SystemLogger());
+			logger = new StacktraceLogger(new MultiLogger(new FilteredLogger(new StreamLogger(logManager.beginLogging()), (level, tag) -> level != LogLevel.DEBUG), new SystemLogger()));
 		} catch (IOException e) {
 			logger = Log.defaultLogger();
 			logger.warnt("init", "failed to create log file", e);
@@ -34,8 +35,10 @@ public class Test {
 		
 //		System.exit(-1);
 		
+		Throwable e = new Exception("test");
+		
 		logger.log(LogLevel.INFO, "Test1");
-		logger.log(LogLevel.ERROR, "Test1");
+		logger.log(LogLevel.ERROR, "Test1", e);
 		
 		logManager.endLogging();
 		

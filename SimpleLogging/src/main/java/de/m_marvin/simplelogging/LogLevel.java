@@ -9,7 +9,7 @@ public class LogLevel {
 	private static int levelLen = 0;
 
 	public static final LogLevel DEBUG = LogLevel.make("DEBUG", "\033[38;5;109m");
-	public static final LogLevel INFO = LogLevel.make("INFO", "\033[38;5;231m");
+	public static final LogLevel INFO = LogLevel.make("INFO", "\033[m");
 	public static final LogLevel WARN = LogLevel.make("WARN", "\033[38;5;190m");
 	public static final LogLevel ERROR = LogLevel.make("ERROR", "\033[38;5;196m");
 	
@@ -31,13 +31,17 @@ public class LogLevel {
 	
 	public static LogLevel of(String name) {
 		if (!levels.containsKey(name)) {
-			levels.put(name, new LogLevel(name, "\033[38;5;231m"));
+			levels.put(name, new LogLevel(name, "\033[m"));
 		}
 		return levels.get(name);
 	}
 	
 	public String getFormat() {
 		return format;
+	}
+	
+	public String getFormatReset() {
+		return "\033[m";
 	}
 	
 	@Override

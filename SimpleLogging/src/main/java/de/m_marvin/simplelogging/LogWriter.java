@@ -25,7 +25,7 @@ public class LogWriter extends Writer {
 		String s = new String(Arrays.copyOfRange(cbuf, off, off + len)).replace("\r\n", "\n").replace('\r', '\n');
 		int i;
 		while ((i = s.indexOf('\n')) != -1) {
-			this.logger.logt(this.level, this.tag, (this.lastLine != null ? this.lastLine : "") + s.substring(0, i));
+			this.logger.logt(this.level, this.tag, "%s", (this.lastLine != null ? this.lastLine : "") + s.substring(0, i));
 			s = s.substring(i + 1);
 			this.lastLine = null;
 		}
