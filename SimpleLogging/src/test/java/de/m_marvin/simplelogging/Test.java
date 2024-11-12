@@ -32,7 +32,7 @@ public class Test {
 		logger.errort("test/test", "test error %s", "3");
 		logger.warnt("test/test", "test warn %s", "4");
 		
-		System.exit(-1);
+//		System.exit(-1);
 		
 		logger.log(LogLevel.INFO, "Test1");
 		logger.log(LogLevel.ERROR, "Test1");
