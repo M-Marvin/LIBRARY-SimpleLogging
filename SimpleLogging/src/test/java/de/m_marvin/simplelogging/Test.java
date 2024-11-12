@@ -1,10 +1,13 @@
 package de.m_marvin.simplelogging;
 
 import java.io.File;
+import java.io.IOException;
 
-import de.m_marvin.simplelogging.filehandling.LogFileHandler;
-import de.m_marvin.simplelogging.printing.LogType;
-import de.m_marvin.simplelogging.printing.Logger;
+import de.m_marvin.simplelogging.api.Logger;
+import de.m_marvin.simplelogging.impl.FilteredLogger;
+import de.m_marvin.simplelogging.impl.MultiLogger;
+import de.m_marvin.simplelogging.impl.StreamLogger;
+import de.m_marvin.simplelogging.impl.SystemLogger;
 
 public class Test {
 	
@@ -13,28 +16,28 @@ public class Test {
 		File runDir = new File(new File(Test.class.getClassLoader().getResource("").getPath().substring(1)).getParentFile().getParentFile(), "run");
 		System.out.println("Run/Log-Folder: " + runDir);
 		
-		LogFileHandler logManager = new LogFileHandler(runDir, "ExampleApp").stopBeforeExit();
-		Logger logger = logManager.beginLogging();
-		logger.catchSystemStreams();
+		LogFileProvider logManager = new LogFileProvider(runDir).setName("ExampleLog").stopBeforeExit();
+		Logger logger;
+		try {
+			logger = new MultiLogger(new FilteredLogger(new StreamLogger(logManager.beginLogging()), (level, tag) -> level != LogLevel.DEBUG), new SystemLogger());
+		} catch (IOException e) {
+			logger = Log.defaultLogger();
+			logger.warnt("init", "failed to create log file", e);
+		}
 		
-		Logger.setDefaultLogger(logger);
+		Log.setDefaultLogger(logger);
 		
-		logger.println(LogType.INFO, "Test Info");
-		logger.println(LogType.ERROR, "Test error");
-		logger.println(LogType.WARN, "Test warn");
+		logger.infot("test/test", "test info %s", "1");
+		logger.debugt("test/test", "test debug %s", "2");
+		logger.errort("test/test", "test error %s", "3");
+		logger.warnt("test/test", "test warn %s", "4");
 		
+		System.exit(-1);
 		
-		
-		System.out.println("TEST 11");
-		
-//		System.exit(-1);
-		
-		logger.log(LogType.INFO, "Test1", "INFO");
-		logger.log(LogType.ERROR, "Test1", "INFO");
+		logger.log(LogLevel.INFO, "Test1");
+		logger.log(LogLevel.ERROR, "Test1");
 		
 		logManager.endLogging();
-		
-		System.out.println("TEST2");
 		
 	}
 	
