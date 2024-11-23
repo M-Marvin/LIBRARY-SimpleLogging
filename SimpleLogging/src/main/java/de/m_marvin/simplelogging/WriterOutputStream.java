@@ -1,7 +1,7 @@
 package de.m_marvin.simplelogging;
 
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Writer;
 
 public class WriterOutputStream extends OutputStream {

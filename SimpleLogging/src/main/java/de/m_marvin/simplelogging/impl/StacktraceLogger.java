@@ -1,13 +1,13 @@
 package de.m_marvin.simplelogging.impl;
 
 import de.m_marvin.simplelogging.LogLevel;
-import de.m_marvin.simplelogging.api.FormatLogger;
+import de.m_marvin.simplelogging.api.Logger;
 
 public class StacktraceLogger extends SimpleLogger {
 
-	protected final FormatLogger logger;
+	protected final Logger logger;
 	
-	public StacktraceLogger(FormatLogger logger) {
+	public StacktraceLogger(Logger logger) {
 		this.logger = logger;
 	}
 	

@@ -5,25 +5,25 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.m_marvin.simplelogging.LogLevel;
-import de.m_marvin.simplelogging.api.FormatLogger;
+import de.m_marvin.simplelogging.api.Logger;
 
 public class MultiLogger extends SimpleLogger {
 
-	protected final List<FormatLogger> loggers;
+	protected final List<Logger> loggers;
 	
 	public MultiLogger() {
 		this(new ArrayList<>());
 	}
 	
-	public MultiLogger(FormatLogger... loggers) {
+	public MultiLogger(Logger... loggers) {
 		this(Arrays.asList(loggers));
 	}
 	
-	public MultiLogger(List<FormatLogger> loggers) {
+	public MultiLogger(List<Logger> loggers) {
 		this.loggers = loggers;
 	}
 	
-	public List<FormatLogger> getLoggers() {
+	public List<Logger> getLoggers() {
 		return loggers;
 	}
 	
