@@ -1,4 +1,4 @@
-package de.m_marvin.simplelogging;
+package de.m_marvin.simplelogging.misc;
 
 import java.io.IOException;
 import java.io.OutputStream;

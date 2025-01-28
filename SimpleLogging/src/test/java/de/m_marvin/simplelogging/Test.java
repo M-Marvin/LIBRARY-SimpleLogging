@@ -2,6 +2,7 @@ package de.m_marvin.simplelogging;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import de.m_marvin.simplelogging.api.Logger;
 import de.m_marvin.simplelogging.impl.FilteredLogger;
@@ -9,6 +10,7 @@ import de.m_marvin.simplelogging.impl.MultiLogger;
 import de.m_marvin.simplelogging.impl.StacktraceLogger;
 import de.m_marvin.simplelogging.impl.StreamLogger;
 import de.m_marvin.simplelogging.impl.SystemLogger;
+import de.m_marvin.simplelogging.misc.ReadBackLogFileProvider;
 
 public class Test {
 	
@@ -17,7 +19,7 @@ public class Test {
 		File runDir = new File(new File(Test.class.getClassLoader().getResource("").getPath().substring(1)).getParentFile().getParentFile(), "run");
 		System.out.println("Run/Log-Folder: " + runDir);
 		
-		LogFileProvider logManager = new LogFileProvider(runDir).setName("ExampleLog").stopBeforeExit();
+		ReadBackLogFileProvider logManager = new ReadBackLogFileProvider(runDir).setName("ExampleLog").stopBeforeExit();
 		Logger logger;
 		try {
 			logger = new StacktraceLogger(new MultiLogger(new FilteredLogger(new StreamLogger(logManager.beginLogging()), (level, tag) -> level != LogLevel.DEBUG), new SystemLogger()));
@@ -33,12 +35,19 @@ public class Test {
 		logger.errort("test/test", "test error %s", "3");
 		logger.warnt("test/test", "test warn %s", "4");
 		
-//		System.exit(-1);
-		
 		Throwable e = new Exception("test");
 		
 		logger.log(LogLevel.INFO, "Test1");
 		logger.log(LogLevel.ERROR, "Test1", e);
+		
+		try {
+			List<String> logs = logManager.readBackLogs();
+			for (String l : logs) {
+				System.out.println("> " + l);
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		
 		logManager.endLogging();
 		

@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.time.LocalDateTime;
 
 import de.m_marvin.simplelogging.LogLevel;
-import de.m_marvin.simplelogging.LogWriter;
+import de.m_marvin.simplelogging.misc.LogWriter;
 
 public interface Logger {
 

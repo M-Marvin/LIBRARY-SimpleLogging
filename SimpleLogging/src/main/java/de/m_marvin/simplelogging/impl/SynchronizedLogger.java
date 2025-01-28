@@ -13,7 +13,7 @@ public class SynchronizedLogger  extends SimpleLogger {
 	
 	@Override
 	public void logt(LogLevel level, String tag, String msg, Object... args) {
-		synchronized (this.logger) {
+		synchronized (this) {
 			this.logger.logt(level, tag, msg, args);
 		}
 	}

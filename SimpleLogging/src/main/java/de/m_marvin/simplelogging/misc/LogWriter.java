@@ -1,9 +1,10 @@
-package de.m_marvin.simplelogging;
+package de.m_marvin.simplelogging.misc;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 
+import de.m_marvin.simplelogging.LogLevel;
 import de.m_marvin.simplelogging.api.Logger;
 
 public class LogWriter extends Writer {

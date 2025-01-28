@@ -1,4 +1,4 @@
-package de.m_marvin.simplelogging;
+package de.m_marvin.simplelogging.misc;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,24 +25,28 @@ public class LogFileProvider {
 		this.logFileFolder = logFileFolder;
 	}
 	
-	public LogFileProvider stopBeforeExit() {
+	@SuppressWarnings("unchecked")
+	public <T extends LogFileProvider> T stopBeforeExit() {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> { if (this.isLogging()) this.endLogging(); }));
-		return this;
+		return (T) this;
 	}
 	
-	public LogFileProvider setTimeFormat(String timeFormat) {
+	@SuppressWarnings("unchecked")
+	public <T extends LogFileProvider> T setTimeFormat(String timeFormat) {
 		this.timeFormat = timeFormat;
-		return this;
+		return (T) this;
 	}
 	
-	public LogFileProvider setFileNameFormat(String format) {
+	@SuppressWarnings("unchecked")
+	public <T extends LogFileProvider> T setFileNameFormat(String format) {
 		this.format = format;
-		return this;
+		return (T) this;
 	}
 	
-	public LogFileProvider setName(String prefix) {
+	@SuppressWarnings("unchecked")
+	public <T extends LogFileProvider> T setName(String prefix) {
 		this.name = prefix;
-		return this;
+		return (T) this;
 	}
 	
 	public String getTimeFormat() {
