@@ -37,6 +37,8 @@ public class Test {
 		
 		Throwable e = new Exception("test");
 		
+		logger.warnPrinterRaw().println("TEST TEST WARB");
+		
 		logger.log(LogLevel.INFO, "Test1");
 		logger.log(LogLevel.ERROR, "Test1", e);
 		

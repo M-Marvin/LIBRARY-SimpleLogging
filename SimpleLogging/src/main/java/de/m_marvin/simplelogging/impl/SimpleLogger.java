@@ -18,8 +18,6 @@ public abstract class SimpleLogger implements FormatLogger {
 		print(level, String.format(this.format, logTimeStr(), level.toString(), tag, String.format(msg, args)));
 	}
 	
-	public abstract void print(LogLevel level, String msg);
-	
 	@Override
 	public void setFormat(String format) {
 		this.format = format;

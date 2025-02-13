@@ -33,6 +33,8 @@ public class MultiLogger extends SimpleLogger {
 	}
 
 	@Override
-	public void print(LogLevel level, String msg) {}
+	public void print(LogLevel level, String msg) {
+		this.loggers.forEach(l -> l.print(level, msg));
+	}
 	
 }

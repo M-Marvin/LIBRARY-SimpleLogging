@@ -14,9 +14,11 @@ public interface Logger {
 
 	public default PrintWriter warnPrinter() { return printer(LogLevel.WARN); }
 	public default PrintWriter warnPrinter(String tag) { return printer(LogLevel.WARN, tag); }
+	public default PrintWriter warnPrinterRaw() { return printerRaw(LogLevel.WARN); }
 	
 	public default Writer warnWriter() { return writer(LogLevel.WARN); }
 	public default Writer warnWriter(String tag) { return writer(LogLevel.WARN, tag); }
+	public default Writer warnWriterRaw() { return writerRaw(LogLevel.WARN); }
 	
 	
 	public default void infot(String tag, String msg, Object... args) { logt(LogLevel.INFO, tag, msg, args); }
@@ -24,9 +26,11 @@ public interface Logger {
 
 	public default PrintWriter infoPrinter() { return printer(LogLevel.INFO); }
 	public default PrintWriter infoPrinter(String tag) { return printer(LogLevel.INFO, tag); }
+	public default PrintWriter infoPrinterRaw() { return printerRaw(LogLevel.INFO); }
 	
 	public default Writer infoWriter() { return writer(LogLevel.INFO); }
 	public default Writer infoWriter(String tag) { return writer(LogLevel.INFO, tag); }
+	public default Writer infoWriterRaw() { return writerRaw(LogLevel.INFO); }
 	
 	
 	public default void errort(String tag, String msg, Object... args) { logt(LogLevel.ERROR, tag, msg, args); }
@@ -34,9 +38,11 @@ public interface Logger {
 
 	public default PrintWriter errorPrinter() { return printer(LogLevel.ERROR); }
 	public default PrintWriter errorPrinter(String tag) { return printer(LogLevel.ERROR, tag); }
+	public default PrintWriter errorPrinterRaw() { return printerRaw(LogLevel.ERROR); }
 	
 	public default Writer errorWriter() { return writer(LogLevel.ERROR); }
 	public default Writer errorWriter(String tag) { return writer(LogLevel.ERROR, tag); }
+	public default Writer errorWriterRaw() { return writerRaw(LogLevel.ERROR); }
 	
 	
 	public default void debugt(String tag, String msg, Object... args) { logt(LogLevel.DEBUG, tag, msg, args); }
@@ -44,9 +50,11 @@ public interface Logger {
 
 	public default PrintWriter debugPrinter() { return printer(LogLevel.DEBUG); }
 	public default PrintWriter debugPrinter(String tag) { return printer(LogLevel.DEBUG, tag); }
+	public default PrintWriter debugPrinterRaw() { return printerRaw(LogLevel.DEBUG); }
 	
 	public default Writer debugWriter() { return writer(LogLevel.DEBUG); }
 	public default Writer debugWriter(String tag) { return writer(LogLevel.DEBUG, tag); }
+	public default Writer debugWriterRaw() { return writerRaw(LogLevel.DEBUG); }
 	
 	
 	public void logt(LogLevel level, String tag, String msg, Object... args);
@@ -54,9 +62,13 @@ public interface Logger {
 	
 	public default PrintWriter printer(LogLevel level) { return new PrintWriter(writer(level)); }
 	public default PrintWriter printer(LogLevel level, String tag) { return new PrintWriter(writer(level, tag)); }
+	public default PrintWriter printerRaw(LogLevel level) { return new PrintWriter(writerRaw(level)); }
 	
 	public default Writer writer(LogLevel level) { return writer(level, ""); }
 	public default Writer writer(LogLevel level, String tag) { return new LogWriter(this, level, tag); }
+	public default Writer writerRaw(LogLevel level) { return new LogWriter(this, level); }
+	
+	public void print(LogLevel level, String msg);
 	
 	public default LocalDateTime logTime() { return LocalDateTime.now(); }
 	public String logTimeStr();

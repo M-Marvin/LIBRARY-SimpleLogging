@@ -24,6 +24,8 @@ public class FilteredLogger  extends SimpleLogger {
 	}
 
 	@Override
-	public void print(LogLevel level, String msg) {}
+	public void print(LogLevel level, String msg) {
+		if (this.filter.test(level, "")) this.logger.print(level, msg);
+	}
 	
 }

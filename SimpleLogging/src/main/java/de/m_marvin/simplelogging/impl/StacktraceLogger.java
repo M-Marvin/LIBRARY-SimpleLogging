@@ -26,6 +26,8 @@ public class StacktraceLogger extends SimpleLogger {
 	}
 
 	@Override
-	public void print(LogLevel level, String msg) {}
+	public void print(LogLevel level, String msg) {
+		this.logger.print(level, msg);
+	}
 	
 }

@@ -19,6 +19,10 @@ public class SynchronizedLogger  extends SimpleLogger {
 	}
 
 	@Override
-	public void print(LogLevel level, String msg) {}
+	public void print(LogLevel level, String msg) {
+		synchronized (this) {
+			this.logger.print(level, msg);
+		}
+	}
 	
 }

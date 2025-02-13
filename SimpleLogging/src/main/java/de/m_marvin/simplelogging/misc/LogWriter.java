@@ -11,6 +11,7 @@ public class LogWriter extends Writer {
 
 	protected final Logger logger;
 	protected final LogLevel level;
+	protected final boolean raw;
 	protected final String tag;
 	
 	String lastLine = null;
@@ -19,6 +20,14 @@ public class LogWriter extends Writer {
 		this.logger = logger;
 		this.level = level;
 		this.tag = tag;
+		this.raw = false;
+	}
+
+	public LogWriter(Logger logger, LogLevel level) {
+		this.logger = logger;
+		this.level = level;
+		this.tag = null;
+		this.raw = true;
 	}
 	
 	@Override
@@ -26,7 +35,11 @@ public class LogWriter extends Writer {
 		String s = new String(Arrays.copyOfRange(cbuf, off, off + len)).replace("\r\n", "\n").replace('\r', '\n');
 		int i;
 		while ((i = s.indexOf('\n')) != -1) {
-			this.logger.logt(this.level, this.tag, "%s", (this.lastLine != null ? this.lastLine : "") + s.substring(0, i));
+			if (this.raw) {
+				this.logger.print(this.level, (this.lastLine != null ? this.lastLine : "") + s.substring(0, i));
+			} else {
+				this.logger.logt(this.level, this.tag, "%s", (this.lastLine != null ? this.lastLine : "") + s.substring(0, i));
+			}
 			s = s.substring(i + 1);
 			this.lastLine = null;
 		}
@@ -38,7 +51,11 @@ public class LogWriter extends Writer {
 	@Override
 	public void flush() throws IOException {
 		if (this.lastLine != null) {
-			this.logger.logt(this.level, this.tag, this.lastLine);
+			if (this.raw) {
+				this.logger.print(this.level, this.lastLine);
+			} else {
+				this.logger.logt(this.level, this.tag, this.lastLine);
+			}
 			this.lastLine = null;
 		}
 	}
