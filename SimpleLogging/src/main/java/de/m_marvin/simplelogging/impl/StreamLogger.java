@@ -41,7 +41,6 @@ public class StreamLogger extends SimpleLogger {
 			if (this.colored) this.stream.write(level.getFormat().getBytes(this.charset));
 			this.stream.write(msg.getBytes(this.charset));
 			if (this.colored) this.stream.write(level.getFormatReset().getBytes(this.charset));
-			this.stream.write('\n');
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

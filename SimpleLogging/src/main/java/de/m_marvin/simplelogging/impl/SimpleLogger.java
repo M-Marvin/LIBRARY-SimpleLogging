@@ -13,9 +13,29 @@ public abstract class SimpleLogger implements FormatLogger {
 	protected String format = DEFAULT_FORMAT;
 	protected String timeFormat = DEFAULT_TIME_FORMAT;
 	
+	protected boolean continueLine = false;
+	
 	@Override
 	public void logt(LogLevel level, String tag, String msg, Object... args) {
-		print(level, String.format(this.format, logTimeStr(), level.toString(), tag, String.format(msg, args)));
+		print(level, String.format(this.format, logTimeStr(), level.toString(), tag, String.format(msg, args)) + "\n");
+	}
+	
+	@Override
+	public void lognlt(LogLevel level, String tag, String msg, Object... args) {
+		String s = String.format(msg, args);
+		String[] lines = s.split("(\n|\r\n)", -1);
+		boolean endsWithNewLine = lines.length > 1 && lines[lines.length - 1].isEmpty();
+		for (int line = 0; line < (endsWithNewLine ? lines.length - 1 : lines.length); line++) {
+			boolean lastLine = line == (endsWithNewLine ? lines.length - 1 : lines.length) - 1;
+			boolean printNewLine = !lastLine || endsWithNewLine;
+			if (this.continueLine) {
+				print(level, printNewLine ? lines[line] + "\n" : lines[line]);
+				this.continueLine = false;
+			} else {
+				print(level, String.format(this.format, logTimeStr(), level.toString(), tag, printNewLine ? lines[line] + "\n" : lines[line]));
+			}
+		}
+		this.continueLine = !endsWithNewLine;
 	}
 	
 	@Override

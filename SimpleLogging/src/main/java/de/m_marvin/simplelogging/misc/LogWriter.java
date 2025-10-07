@@ -2,7 +2,6 @@ package de.m_marvin.simplelogging.misc;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
 
 import de.m_marvin.simplelogging.LogLevel;
 import de.m_marvin.simplelogging.api.Logger;
@@ -14,7 +13,7 @@ public class LogWriter extends Writer {
 	protected final boolean raw;
 	protected final String tag;
 	
-	String lastLine = null;
+	protected char lastChar = '\n';
 	
 	public LogWriter(Logger logger, LogLevel level, String tag) {
 		this.logger = logger;
@@ -32,34 +31,21 @@ public class LogWriter extends Writer {
 	
 	@Override
 	public void write(char[] cbuf, int off, int len) throws IOException {
-		String s = new String(Arrays.copyOfRange(cbuf, off, off + len)).replace("\r\n", "\n").replace('\r', '\n');
-		int i;
-		while ((i = s.indexOf('\n')) != -1) {
-			if (this.raw) {
-				this.logger.print(this.level, (this.lastLine != null ? this.lastLine : "") + s.substring(0, i));
-			} else {
-				this.logger.logt(this.level, this.tag, "%s", (this.lastLine != null ? this.lastLine : "") + s.substring(0, i));
-			}
-			s = s.substring(i + 1);
-			this.lastLine = null;
+		if (this.raw) {
+			this.logger.print(level, String.copyValueOf(cbuf, off, len));
+		} else {
+			this.logger.lognlt(level, tag, "%s", String.copyValueOf(cbuf, off, len));
 		}
-		if (!s.isEmpty()) {
-			this.lastLine = s;
-		}
+		this.lastChar = cbuf[off + len - 1];
 	}
 
 	@Override
 	public void flush() throws IOException {
-		if (this.lastLine != null) {
-			if (this.raw) {
-				this.logger.print(this.level, this.lastLine);
-			} else {
-				this.logger.logt(this.level, this.tag, this.lastLine);
-			}
-			this.lastLine = null;
+		if (this.lastChar != '\n' || this.lastChar == '\r') {
+			this.logger.print(this.level, "\n");
 		}
 	}
-
+	
 	@Override
 	public void close() throws IOException {
 		this.flush();

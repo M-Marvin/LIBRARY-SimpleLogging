@@ -59,6 +59,10 @@ public interface Logger {
 	
 	public void logt(LogLevel level, String tag, String msg, Object... args);
 	public default void log(LogLevel level, String msg, Object... args) { logt(level, "", msg, args); }
+
+	public void lognlt(LogLevel level, String tag, String msg, Object... args);
+	public default void lognl(LogLevel level, String msg, Object... args) { lognlt(level, "", msg, args); }
+	
 	
 	public default PrintWriter printer(LogLevel level) { return new PrintWriter(writer(level)); }
 	public default PrintWriter printer(LogLevel level, String tag) { return new PrintWriter(writer(level, tag)); }

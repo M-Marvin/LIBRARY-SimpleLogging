@@ -17,9 +17,9 @@ public class SystemLogger extends SimpleLogger {
 	@Override
 	public void print(LogLevel level, String msg) {
 		if (level == LogLevel.ERROR || level == LogLevel.WARN) {
-			System.err.println((this.colored ? level.getFormat() : "") + msg + (this.colored ? level.getFormatReset() : ""));
+			System.err.print((this.colored ? level.getFormat() : "") + msg + (this.colored ? level.getFormatReset() : ""));
 		} else {
-			System.out.println((this.colored ? level.getFormat() : "") + msg + (this.colored ? level.getFormatReset() : ""));
+			System.out.print((this.colored ? level.getFormat() : "") + msg + (this.colored ? level.getFormatReset() : ""));
 		}
 	}
 

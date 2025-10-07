@@ -37,7 +37,21 @@ public class Test {
 		
 		Throwable e = new Exception("test");
 		
-		logger.warnPrinterRaw().println("TEST TEST WARB");
+		logger.warnPrinterRaw().println("TEST TEST WARN");
+
+		logger.log(LogLevel.INFO, "Test1");
+
+		logger.warnPrinter().print("TEST");
+		logger.warnPrinter().println(" TEST WARN");
+		logger.warnPrinter().println("TEST W1\nTEST W2");
+
+		var p = logger.warnPrinterRaw();
+		p.write('A');
+		p.write('B');
+		p.write('V');
+		p.write('\n');
+		p.write('S');
+		p.flush();
 		
 		logger.log(LogLevel.INFO, "Test1");
 		logger.log(LogLevel.ERROR, "Test1", e);
